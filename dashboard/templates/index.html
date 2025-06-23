@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h1 { color: #333; }
+        .data { font-size: 24px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Information</h1>
+    <p>Some stuff</p>
+    <a href="/info">Go to the info page</a>
+    <div id="sensorData"></div>
+    <script>
+        // Function to fetch sensor data
+        function fetchData() {
+            fetch('/test')
+                .then(response => response.json())
+                .then(data => {
+                    const sensorDataDiv = document.getElementById('sensorData');
+                    sensorDataDiv.innerHTML = ''; // Clear previous data
+                    for (const [topic, value] of Object.entries(data)) {
+                        const dataElement = document.createElement('div');
+                        dataElement.className = 'data';
+                        dataElement.innerText = `${topic}: ${value}`;
+                        sensorDataDiv.appendChild(dataElement);
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Fetch data every 2 seconds
+        setInterval(fetchData, 5000);
+    </script>   
+</body>
+</html>

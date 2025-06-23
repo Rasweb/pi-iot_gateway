@@ -4,3 +4,9 @@
 
 * Activate python virtual environment:
 <code> source flask_env/bin/activate </code>
+
+* Run python file
+<code> python3 app.py </code>
+
+* Install paho-mqtt
+<code> pip install paho-mqtt </code>
