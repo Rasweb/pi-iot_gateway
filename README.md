@@ -6,5 +6,3 @@ Using:
 * MQTT (mosquitto)
 * Flask (python)
 * C/C++ (embedded)
-
-
