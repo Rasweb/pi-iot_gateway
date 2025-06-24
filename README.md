@@ -1,4 +1,4 @@
-# IoT Gateway With project a Raspberry PI
+# IoT Gateway project with a Raspberry PI
 This is my personal project about an IoT Gateway.
 Using:
 * Raspberry PI 5
