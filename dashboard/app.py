@@ -11,11 +11,24 @@ mqtt_pass = os.getenv("MQTT_PASS")
 app = Flask(__name__)
 test_data = {}
 
+# TODO - Track connected devices, status and more using a dictionary
+# TODO - Get more mqtt info, logging and events
+# TODO - Look up psutil for raspberry pi system info and display that
+# TODO - Add post routes to recive data from other devices
+# TODO - Add a basic authentication for some routes
+# TODO - Add error handling
 
+
+# TODO - Routes to implement (not for frontend)
+#   - /api/sensors - return sensor data as JSON 
+
+# TODO - subscribe to more topics
+# From paho mqtt with required params
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT broker")
-    client.subscribe("test/temp")  
+    client.subscribe("test/#") # subscribe to all test topics  
 
+# From paho mqtt with required params
 def on_message(client, userdata, msg):
     # Refers to a variable outside the function
     global test_data
@@ -26,6 +39,7 @@ def on_message(client, userdata, msg):
     test_data[topic] = payload
 
 mqtt_client = mqtt.Client()
+# Set username and password for mqtt authentication
 mqtt_client.username_pw_set(mqtt_user, mqtt_pass)
 mqtt_client.on_connect = on_connect
 mqtt_client.on_message = on_message
@@ -37,6 +51,11 @@ mqtt_client.loop_start()
 # Homepage
 @app.route('/')
 def home():
+    # TODO - Send variable info with page render
+    # - return render_template('index.html', bob="hello")
+    # display bob in html
+    # - <p>{{ bob }}</p>
+
     return render_template('index.html')
 
 # Info route, renders html

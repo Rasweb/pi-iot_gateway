@@ -1,20 +1,53 @@
-<!DOCTYPE html>
-<head>
-     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Page</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        h1 { color: #333; }
-        .data { font-size: 24px; margin: 10px 0; }
-    </style>
-</head>
-<body>
-    <h1>Dashboard Information</h1>
+{% extends "base.html" %}
+
+{% block title %} Main page {% endblock %}
+
+{% block content %}
+<div>
+    <h1>IoT Gateway Dashboard</h1>
     <p>Some stuff</p>
-    <a href="/info">Go to the info page</a>
-    <div id="sensorData"></div>
-    <script>
+</div>
+<div id="sensorData">
+
+</div>
+<div>
+        Mqtt:
+            - Uptime (how long it has been running)
+            - Active connections?
+            - Mqtt version and details 
+</div>
+<div>
+        Connected devices:
+            - Devices id and names
+            - Connection status
+            - ips?
+</div>
+<div>
+        Sensor data:
+            - Real-time readings
+            - Historical data for sensors
+            - Graphs or charts
+</div>
+<div>
+        Pi system health:
+            - cpu and memory usage
+            - disk usage and available storage
+            - system temp
+</div>
+<div>
+        Control panel:
+            - basic controls, restart
+            - update firmware and configs
+</div>
+<div>
+        Logs and events:
+</div>
+<div>
+        custom user interface
+</div>
+<div id="sensorData"></div>
+ <script>
+        urlTest();
         // Function to fetch sensor data
         function fetchData() {
             fetch('/test')
@@ -35,5 +68,4 @@
         // Fetch data every 2 seconds
         setInterval(fetchData, 5000);
     </script>   
-</body>
-</html>
+{% endblock %}
