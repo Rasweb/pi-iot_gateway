@@ -2,6 +2,7 @@ from flask import Flask, jsonify, render_template
 import paho.mqtt.client as mqtt
 from dotenv import load_dotenv
 import os
+import psutil
 
 load_dotenv()  # take environment variables
 mqtt_user = os.getenv("MQTT_USER")
@@ -11,9 +12,62 @@ mqtt_pass = os.getenv("MQTT_PASS")
 app = Flask(__name__)
 test_data = {}
 
+def system_info():
+    memory = psutil.virtual_memory()
+    # Divide from Bytes -> KB -> MB
+    available = round(memory.available/1024.0/1024.0,1)
+    total = round(memory.total/1024.0/1024.0,1)
+    # print(str(available) + "MB free /" + str(total) + "MB total ( " + str(memory.percent) + "% )")
+    memory_info = str(available) + "MB free /" + str(total) + "MB total ( " + str(memory.percent) + "% )"
+
+    disk = psutil.disk_usage('/')
+    # Divide from Bytes -> KB -> MB -> GB
+    free = round(disk.free/1024.0/1024.0/1024.0,1)
+    total = round(disk.total/1024.0/1024.0/1024.0,1)
+    # print(str(free) + "GB free /" + str(total) + "GB total ( " + str(disk.percent) + "% )")
+    disk_info = str(free) + "GB free /" + str(total) + "GB total ( " + str(disk.percent) + "% )"
+ 
+    # Memory Information
+    memory = psutil.virtual_memory()
+    memory_info = {
+        'Total Memory': f"{memory.total / (1024 ** 2):.2f} MB",
+        'Available Memory': f"{memory.available / (1024 ** 2):.2f} MB",
+        'Used Memory': f"{memory.used / (1024 ** 2):.2f} MB",
+        'Memory Usage': f"{memory.percent}%"
+    }
+
+    # Disk Information
+    disk = psutil.disk_usage('/')
+    print("Disk Information:")
+    print(f"Total Disk Space: {disk.total / (1024 ** 3):.2f} GB")
+    print(f"Used Disk Space: {disk.used / (1024 ** 3):.2f} GB")
+    print(f"Free Disk Space: {disk.free / (1024 ** 3):.2f} GB")
+    print(f"Disk Usage: {disk.percent}%")
+    
+    disk_info =  {
+        'Total Disk Space': f"{disk.total / (1024 ** 3):.2f} GB",
+        'Used Disk Space': f"{disk.used / (1024 ** 3):.2f} GB",
+        'Free Disk Space': f"{disk.free / (1024 ** 3):.2f} GB",
+        'Disk Usage': f"{disk.percent}%"
+    }
+    other_info = {
+        'Current CPU usage': f"{psutil.cpu_percent(1)}%",
+        # 'System temp': f"{}"
+    }
+    info = {
+        'Other': other_info,
+        'Memory': memory_info,
+        'Disk': disk_info
+    }
+
+
+    # TODO - make more readable
+    print(f"System temp: , {psutil.sensors_temperatures()} %")
+
+    return info
+
 # TODO - Track connected devices, status and more using a dictionary
 # TODO - Get more mqtt info, logging and events
-# TODO - Look up psutil for raspberry pi system info and display that
 # TODO - Add post routes to recive data from other devices
 # TODO - Add a basic authentication for some routes
 # TODO - Add error handling
@@ -51,12 +105,8 @@ mqtt_client.loop_start()
 # Homepage
 @app.route('/')
 def home():
-    # TODO - Send variable info with page render
-    # - return render_template('index.html', bob="hello")
-    # display bob in html
-    # - <p>{{ bob }}</p>
-
-    return render_template('index.html')
+    info = system_info()
+    return render_template('index.html', system_info = info)
 
 # Info route, renders html
 @app.route('/info')
