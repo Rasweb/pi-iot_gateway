@@ -5,7 +5,7 @@
 {% block content %}
 <div>
     <h1>IoT Gateway Dashboard</h1>
-    <p>Some stuff</p>
+    <p>Real-time monitoring and management</p>
 </div>
 <div id="sensorData">
 
@@ -28,14 +28,72 @@
             - Historical data for sensors
             - Graphs or charts
 </div>
-<div>
-        Pi system health:
-            - cpu and memory usage
-            - disk usage and available storage
-            - system temp
-            <p>Memory information: {{ system_info['Memory'] }}</p>
-            <p>Disk information: {{ system_info['Disk'] }}</p>
-            <p>Cpu information: {{system_info['Current CPU usage']}}</p>
+<div  class="container">
+    <h2>Server System health</h2>
+    <p>System information about the Raspberry pi 5 server</p>
+    <div class="card">
+        <h3>Memory Information</h3>
+        <ul>
+            <li>
+                <b>Total Memory: </b>
+                {{system_info['Memory']['Total Memory']}}
+            </li>
+            <li> 
+                <b>Available Memory</b> 
+                {{system_info['Memory']['Available Memory']}}
+            </li>
+            <li> 
+                <b>Used Memory</b> 
+                {{system_info['Memory']['Used Memory']}}
+            </li>
+            <li>
+                <b>Memory Usage</b> 
+                {{system_info['Memory']['Memory Usage']}}
+            </li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Disk Information</h3>
+        <ul>
+            <li>
+                <b>Total Disk Space: </b>
+                {{system_info['Disk']['Total Disk Space']}}
+            </li>
+            <li>
+                <b>Used Disk Space: </b>
+                {{system_info['Disk']['Used Disk Space']}}
+            </li>
+            <li>
+                <b>Free Disk Space: </b>
+                {{system_info['Disk']['Free Disk Space']}}
+            </li>
+            <li>
+                <b>Disk Usage: </b>
+                {{system_info['Disk']['Disk Usage']}}
+            </li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>CPU Information</h3>
+        <ul>
+            <li>
+                <b>Usage: </b>
+                {{system_info['CPU']['Usage']}}
+            </li>
+            <li>
+                <b>Current temp: </b>
+                {{system_info['CPU']['Current']}}
+            </li>
+            <li>
+                <b>High temp: </b>
+                {{system_info['CPU']['High']}}
+            </li>
+            <li>
+                <b>Critical Temp: </b>
+                {{system_info['CPU']['Critical']}}
+            </li>
+        </ul>
+    </div>
 </div>
 <div>
         Control panel:

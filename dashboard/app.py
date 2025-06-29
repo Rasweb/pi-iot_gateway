@@ -10,6 +10,33 @@ mqtt_pass = os.getenv("MQTT_PASS")
 
 # Initiates the flask application
 app = Flask(__name__)
+
+# TODO - subscribe to more topics
+# From paho mqtt with required params
+def on_connect(client, userdata, flags, reason_code, properties):
+    print("Connected to MQTT broker")
+    client.subscribe("test/#") # subscribe to all test topics  
+
+# From paho mqtt with required params
+def on_message(client, userdata, msg):
+    # Refers to a variable outside the function
+    global test_data
+    topic = msg.topic
+    payload = msg.payload.decode()
+    print(f"Received message on {topic}: {payload}") 
+    # dictonary
+    test_data[topic] = payload
+
+mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+# Set username and password for mqtt authentication
+mqtt_client.username_pw_set(mqtt_user, mqtt_pass)
+mqtt_client.on_connect = on_connect
+mqtt_client.on_message = on_message
+# mqtt broker
+mqtt_client.connect("localhost", 1883, 60)
+# mqtt loop
+mqtt_client.loop_start()
+
 test_data = {}
 
 def system_info():
@@ -38,33 +65,34 @@ def system_info():
 
     # Disk Information
     disk = psutil.disk_usage('/')
-    print("Disk Information:")
-    print(f"Total Disk Space: {disk.total / (1024 ** 3):.2f} GB")
-    print(f"Used Disk Space: {disk.used / (1024 ** 3):.2f} GB")
-    print(f"Free Disk Space: {disk.free / (1024 ** 3):.2f} GB")
-    print(f"Disk Usage: {disk.percent}%")
     
+    #  CPU Information
+    cpu_temp = psutil.sensors_temperatures().get("cpu_thermal", [])
+    for entry in cpu_temp:
+        # Create a new dict with key/value pairs
+        cpu_info = dict(Usage = {psutil.cpu_percent(1)},
+                        Current = {entry.current},
+                        High = entry.high, 
+                        Critical = {entry.critical})
+
     disk_info =  {
         'Total Disk Space': f"{disk.total / (1024 ** 3):.2f} GB",
         'Used Disk Space': f"{disk.used / (1024 ** 3):.2f} GB",
         'Free Disk Space': f"{disk.free / (1024 ** 3):.2f} GB",
         'Disk Usage': f"{disk.percent}%"
     }
-    other_info = {
-        'Current CPU usage': f"{psutil.cpu_percent(1)}%",
-        # 'System temp': f"{}"
-    }
+
     info = {
-        'Other': other_info,
         'Memory': memory_info,
-        'Disk': disk_info
+        'Disk': disk_info,
+        'CPU': cpu_info
     }
-
-
-    # TODO - make more readable
-    print(f"System temp: , {psutil.sensors_temperatures()} %")
 
     return info
+
+# Print mqtt information usign the mqtt_client variable
+def mqtt_info():
+    print(f"d {mqtt_client.transport}")
 
 # TODO - Track connected devices, status and more using a dictionary
 # TODO - Get more mqtt info, logging and events
@@ -76,36 +104,13 @@ def system_info():
 # TODO - Routes to implement (not for frontend)
 #   - /api/sensors - return sensor data as JSON 
 
-# TODO - subscribe to more topics
-# From paho mqtt with required params
-def on_connect(client, userdata, flags, rc):
-    print("Connected to MQTT broker")
-    client.subscribe("test/#") # subscribe to all test topics  
 
-# From paho mqtt with required params
-def on_message(client, userdata, msg):
-    # Refers to a variable outside the function
-    global test_data
-    topic = msg.topic
-    payload = msg.payload.decode()
-    print(f"Received message on {topic}: {payload}") 
-    # dictonary
-    test_data[topic] = payload
-
-mqtt_client = mqtt.Client()
-# Set username and password for mqtt authentication
-mqtt_client.username_pw_set(mqtt_user, mqtt_pass)
-mqtt_client.on_connect = on_connect
-mqtt_client.on_message = on_message
-# mqtt broker
-mqtt_client.connect("localhost", 1883, 60)
-# mqtt loop
-mqtt_client.loop_start()
 
 # Homepage
 @app.route('/')
 def home():
     info = system_info()
+    mqtt_info()
     return render_template('index.html', system_info = info)
 
 # Info route, renders html
