@@ -10,11 +10,42 @@
 <div id="sensorData">
 
 </div>
-<div>
-        Mqtt:
-            - Uptime (how long it has been running)
-            - Active connections?
-            - Mqtt version and details 
+<div class="container">
+    <h2>MQTT Client Information</h2>
+    <p>Details about the MQTT connection and client status</p>
+    <div class="card">
+        <h3>Connection</h3>
+        <ul>
+            <li><b>Host:</b> {{ mqtt_info['Host'] }}</li>
+            <li><b>Port:</b> {{ mqtt_info['Port'] }}</li>
+            <li><b>State:</b> {{ mqtt_info['State'] }}</li>
+            <li><b>Protocol Version:</b> {{ mqtt_info['Protocol Version'] }}</li>
+            <li><b>Mqtt running for:</b> {{mqtt_info['mqtt uptime']}} h</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Timing</h3>
+        <ul>
+            <li><b>Last Msg Received:</b> {{ mqtt_info['Timestamp of last msg received'] }}</li>
+            <li><b>Last Msg Sent:</b> {{ mqtt_info['Timestamp of last msg sent'] }}</li>
+            <li><b>Keep Alive Interval:</b> {{ mqtt_info['Keep alive interval'] }}</li>
+            <li><b>Connect Timeout:</b> {{ mqtt_info['Connect timeout duration'] }}</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Messages</h3>
+        <ul>
+            <li><b>Inflight Msgs:</b> {{ mqtt_info['Nr of sent but not acknowledged msgs'] }}</li>
+            <li><b>Max Waiting Msgs:</b> {{ mqtt_info['Max allowed wating msgs'] }}</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Reconnect</h3>
+        <ul>
+            <li><b>Min Reconnect Delay:</b> {{ mqtt_info['Min reconnect delay'] }}</li>
+            <li><b>Max Reconnect Delay:</b> {{ mqtt_info['Max reconnect delay'] }}</li>
+        </ul>
+    </div>
 </div>
 <div>
         Connected devices:

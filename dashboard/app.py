@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 from dotenv import load_dotenv
 import os
 import psutil
+import datetime
 
 load_dotenv()  # take environment variables
 mqtt_user = os.getenv("MQTT_USER")
@@ -39,7 +40,7 @@ mqtt_client.loop_start()
 
 test_data = {}
 
-def system_info():
+def get_system_info():
     memory = psutil.virtual_memory()
     # Divide from Bytes -> KB -> MB
     available = round(memory.available/1024.0/1024.0,1)
@@ -91,8 +92,45 @@ def system_info():
     return info
 
 # Print mqtt information usign the mqtt_client variable
-def mqtt_info():
-    print(f"d {mqtt_client.transport}")
+def get_mqtt_info():
+    # vars() returns the __dict__ attribute of an object
+    # print(vars(mqtt_client))
+    mqtt_info = {
+        'Protocol Version': f"{mqtt_client.protocol}",
+        'State': f"{mqtt_client._state}",
+        'Host': f"{mqtt_client.host}",
+        'Port': f"{mqtt_client.port}",
+        'Timestamp of last msg received': f"{mqtt_client._last_msg_in}",
+        'Timestamp of last msg sent': f"{mqtt_client._last_msg_out}",
+        'Nr of sent but not acknowledged msgs': f"{mqtt_client._inflight_messages}",
+        'Max allowed wating msgs': f"{mqtt_client.max_inflight_messages}",
+        'Keep alive interval': f"{mqtt_client.keepalive}",
+        'Connect timeout duration': f"{mqtt_client.connect_timeout}",
+        'Min reconnect delay': f"{mqtt_client._reconnect_min_delay}",
+        'Max reconnect delay': f"{mqtt_client._reconnect_max_delay}",
+    }
+# # Example usage:
+# print(get_mosquitto_uptime())
+
+    return mqtt_info
+
+import psutil
+import datetime
+
+# Uses psutil to iterate over running processes and find the mosquitto one
+# Uses a generator expression to iterate over all running processes
+## Generator expression without storing the values all at once
+def get_mosquitto_uptime():
+    # Returns process if match, otherwise it returns None
+    # (expression for item in iterable if condition)
+    proc = next((p for p in psutil.process_iter(['name', 'create_time']) if p.info['name'] == 'mosquitto'), None)
+    if proc:
+        start_time = datetime.datetime.fromtimestamp(proc.info['create_time'])
+        now = datetime.datetime.now()
+        uptime = now - start_time
+        return str(uptime).split('.')[0]
+    return "mosquitto not running"
+
 
 # TODO - Track connected devices, status and more using a dictionary
 # TODO - Get more mqtt info, logging and events
@@ -109,9 +147,10 @@ def mqtt_info():
 # Homepage
 @app.route('/')
 def home():
-    info = system_info()
-    mqtt_info()
-    return render_template('index.html', system_info = info)
+    system_info = get_system_info()
+    mqtt_info = get_mqtt_info()
+    mqtt_info.update({'mqtt uptime': get_mosquitto_uptime()})
+    return render_template('index.html', system_info = system_info, mqtt_info = mqtt_info)
 
 # Info route, renders html
 @app.route('/info')
