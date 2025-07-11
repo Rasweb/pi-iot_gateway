@@ -4,7 +4,9 @@
 # CMakeLists in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.5)
 
-set(REQUIRES mqtt)
+set(EXTRA_COMPONENT_DIRS
+    "./components/protocol_examples_common/include/protocol_examples_common.h"
+)
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(esp-mqtt-client)

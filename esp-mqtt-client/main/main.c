@@ -5,7 +5,7 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "esp_netif.h"
-#include "protocol_common.h"
+#include "protocol_examples_common.h"
 
 // https://docs.espressif.com/projects/esp-idf/en/v5.4.2/esp32c6/api-reference/protocols/mqtt.html 
 const char *TAG = "MQTT5";
@@ -70,7 +70,7 @@ void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event
 void mqtt5_app_start(){
 char buffer[100];
     // Strings with custom formats
-    sprintf(buffer, "mqtt://%s:%s@192.168.0.81", MQTT_USERNAME, MQTT_PASSWORD);
+    sprintf(buffer, "mqtt://%s:%s@%s", MQTT_USERNAME, MQTT_PASSWORD, BROKER_IP);
     esp_mqtt_client_config_t mqtt5_cfg = {
         .broker.address.uri = buffer,
         .session.protocol_ver = MQTT_PROTOCOL_V_5,
@@ -104,6 +104,8 @@ void app_main(void)
 
     // TODO - fix, in example its from the file protocol_examples_common.h
     // ESP_ERROR_CHECK(example_connect());
+    ESP_ERROR_CHECK(example_connect());
+
     mqtt5_app_start();
 
     vTaskDelay(pdMS_TO_TICKS(10));
