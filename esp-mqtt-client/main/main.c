@@ -6,6 +6,7 @@
 #include "nvs_flash.h"
 #include "esp_netif.h"
 #include "protocol_examples_common.h"
+#include "wifi_conf.h"
 
 // https://docs.espressif.com/projects/esp-idf/en/v5.4.2/esp32c6/api-reference/protocols/mqtt.html 
 const char *TAG = "MQTT5";

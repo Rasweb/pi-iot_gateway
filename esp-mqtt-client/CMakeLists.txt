@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.5)
 
 set(EXTRA_COMPONENT_DIRS
     "./components/protocol_examples_common/include/protocol_examples_common.h"
+    "./components/wifi/include/wifi_conf.h"
+
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
