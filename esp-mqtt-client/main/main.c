@@ -5,7 +5,6 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "esp_netif.h"
-#include "protocol_examples_common.h"
 #include "wifi_conf.h"
 
 // https://docs.espressif.com/projects/esp-idf/en/v5.4.2/esp32c6/api-reference/protocols/mqtt.html 
@@ -95,17 +94,7 @@ void app_main(void)
     ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());
     ESP_LOGI(TAG, "[APP] IDF version: %s", esp_get_idf_version());
 
-
-    // Used to store data that must persist across device resets.
-    ESP_ERROR_CHECK(nvs_flash_init());
-    // Necessary for enabling network connectivity.
-    ESP_ERROR_CHECK(esp_netif_init());
-    // Handling asynchronous events.
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-
-    // TODO - fix, in example its from the file protocol_examples_common.h
-    // ESP_ERROR_CHECK(example_connect());
-    ESP_ERROR_CHECK(example_connect());
+    wifi_main();
 
     mqtt5_app_start();
 
