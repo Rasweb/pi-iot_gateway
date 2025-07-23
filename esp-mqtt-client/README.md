@@ -1,32 +1,57 @@
-# _Sample project_
+# ESP32 MQTT Client
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Build Steps](#build-steps)
+- [In Action](#in-action)
+- [Built With](#built-with)
 
-This is the simplest buildable example. The example is used by command `idf.py create-project`
-that copies the project to user specified path and set it's name. For more information follow the [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project)
+## Overview
+The ESP32 MQTT Client is designed to connect to the Raspberry Pi MQTT broker, allowing for seamless communication and data exchange. This client can publish sensor data and subscribe to topics for receiving commands.
 
+## Features
+- Connects to the Raspberry Pi MQTT broker.
+- Publishes sensor data to specified topics.
+- Subscribes to topics for receiving commands.
+- Supports Wi-Fi connectivity for remote access.
 
+## Getting Started
+To get started with the ESP32 MQTT Client, follow the instructions below to set up your development environment and upload the code to your ESP32 device.
 
-## How to use example
-We encourage the users to use the example as a template for the new projects.
-A recommended way is to follow the instructions on a [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project).
+## Build Steps
+1. Set Up the ESP32 Development Environment:
+   - Set up the esp32 or use another client.
+   - I used esp32-c6 espressif idf framework using c. 
 
-## Example folder contents
+2. Clone the Repository:
+   ```bash
+   git clone https://github.com/Rasweb/pi-iot_gateway.git
+   cd pi-iot_gateway/esp-mqtt-client
+    ```
+   
+ 3. Configure the code
+    - Create a config.h file for credentials inside the main folder:
+      * MQTT_USERNAME
+      * MQTT_PASSWORD
+      * BROKER_IP
+    - Create a config.h file for credentials inside the components/wifi/include folder:
+      * WIFI_NAME - SSID
+      * WIFI_PASSWORD
 
-The project **sample_project** contains one source file in C language [main.c](main/main.c). The file is located in folder [main](main).
+## In Action
+Once the code is uploaded, the ESP32 will connect to the specified WI-FI network and MQTT broker.
+You can monitor the serial output to see published messages and received commands.
 
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt`
-files that provide set of directives and instructions describing the project's source files and targets
-(executable, library, or both). 
-
-Below is short explanation of remaining files in the project folder.
-
-```
-├── CMakeLists.txt
-├── main
-│   ├── CMakeLists.txt
-│   └── main.c
-└── README.md                  This is the file you are currently reading
-```
-Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 
-They are not used or needed when building with CMake and idf.py.
+## Built With
+- ESP32-C6
+- Espressif idf
+  *  nvs_flash
+  *  esp_netif
+- C
+- MQTT
+  *  mqtt_client
+- WiFi
+  * esp_wifi
+   
