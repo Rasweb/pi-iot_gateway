@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %} Main page {% endblock %}
+
+{% block content %}
+<div>
+    <h1>IoT Gateway Dashboard</h1>
+    <p>Real-time monitoring and management</p>
+</div>
+<div id="sensorData">
+
+</div>
+<div class="container">
+    <h2>MQTT Client Information</h2>
+    <p>Details about the MQTT connection and client status</p>
+    <div class="card">
+        <h3>Connection</h3>
+        <ul>
+            <li><b>Host:</b> {{ mqtt_info['Host'] }}</li>
+            <li><b>Port:</b> {{ mqtt_info['Port'] }}</li>
+            <li><b>State:</b> {{ mqtt_info['State'] }}</li>
+            <li><b>Protocol Version:</b> {{ mqtt_info['Protocol Version'] }}</li>
+            <li><b>Mqtt running for:</b> {{mqtt_info['mqtt uptime']}} h</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Timing</h3>
+        <ul>
+            <li><b>Last Msg Received:</b> {{ mqtt_info['Timestamp of last msg received'] }}</li>
+            <li><b>Last Msg Sent:</b> {{ mqtt_info['Timestamp of last msg sent'] }}</li>
+            <li><b>Keep Alive Interval:</b> {{ mqtt_info['Keep alive interval'] }}</li>
+            <li><b>Connect Timeout:</b> {{ mqtt_info['Connect timeout duration'] }}</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Messages</h3>
+        <ul>
+            <li><b>Inflight Msgs:</b> {{ mqtt_info['Nr of sent but not acknowledged msgs'] }}</li>
+            <li><b>Max Waiting Msgs:</b> {{ mqtt_info['Max allowed wating msgs'] }}</li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Reconnect</h3>
+        <ul>
+            <li><b>Min Reconnect Delay:</b> {{ mqtt_info['Min reconnect delay'] }}</li>
+            <li><b>Max Reconnect Delay:</b> {{ mqtt_info['Max reconnect delay'] }}</li>
+        </ul>
+    </div>
+</div>
+<div>
+        Connected devices:
+            - Devices id and names
+            - Connection status
+            - ips?
+</div>
+<div>
+        Sensor data:
+            - Real-time readings
+            - Historical data for sensors
+            - Graphs or charts
+</div>
+<div  class="container">
+    <h2>Server System health</h2>
+    <p>System information about the Raspberry pi 5 server</p>
+    <div class="card">
+        <h3>Memory Information</h3>
+        <ul>
+            <li>
+                <b>Total Memory: </b>
+                {{system_info['Memory']['Total Memory']}}
+            </li>
+            <li> 
+                <b>Available Memory</b> 
+                {{system_info['Memory']['Available Memory']}}
+            </li>
+            <li> 
+                <b>Used Memory</b> 
+                {{system_info['Memory']['Used Memory']}}
+            </li>
+            <li>
+                <b>Memory Usage</b> 
+                {{system_info['Memory']['Memory Usage']}}
+            </li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>Disk Information</h3>
+        <ul>
+            <li>
+                <b>Total Disk Space: </b>
+                {{system_info['Disk']['Total Disk Space']}}
+            </li>
+            <li>
+                <b>Used Disk Space: </b>
+                {{system_info['Disk']['Used Disk Space']}}
+            </li>
+            <li>
+                <b>Free Disk Space: </b>
+                {{system_info['Disk']['Free Disk Space']}}
+            </li>
+            <li>
+                <b>Disk Usage: </b>
+                {{system_info['Disk']['Disk Usage']}}
+            </li>
+        </ul>
+    </div>
+    <div class="card">
+        <h3>CPU Information</h3>
+        <ul>
+            <li>
+                <b>Usage: </b>
+                {{system_info['CPU']['Usage']}}
+            </li>
+            <li>
+                <b>Current temp: </b>
+                {{system_info['CPU']['Current']}}
+            </li>
+            <li>
+                <b>High temp: </b>
+                {{system_info['CPU']['High']}}
+            </li>
+            <li>
+                <b>Critical Temp: </b>
+                {{system_info['CPU']['Critical']}}
+            </li>
+        </ul>
+    </div>
+</div>
+<div>
+        Control panel:
+            - basic controls, restart
+            - update firmware and configs
+</div>
+<div>
+        Logs and events:
+</div>
+<div>
+        custom user interface
+</div>
+<div id="sensorData"></div>
+ <script>
+        urlTest();
+        // Function to fetch sensor data
+        function fetchData() {
+            fetch('/test')
+                .then(response => response.json())
+                .then(data => {
+                    const sensorDataDiv = document.getElementById('sensorData');
+                    sensorDataDiv.innerHTML = ''; // Clear previous data
+                    for (const [topic, value] of Object.entries(data)) {
+                        const dataElement = document.createElement('div');
+                        dataElement.className = 'data';
+                        dataElement.innerText = `${topic}: ${value}`;
+                        sensorDataDiv.appendChild(dataElement);
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Fetch data every 2 seconds
+        setInterval(fetchData, 5000);
+    </script>   
+{% endblock %}
